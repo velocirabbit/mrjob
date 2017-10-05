@@ -128,6 +128,23 @@ class HadoopInTheCloudJobRunner(MRJobBinRunner):
             opts['task_instance_type'] = opts['core_instance_type']
 
         return opts
+    
+    def _fix_opt(self, opt_key, opt_value, source):
+        """Fix a single option, returning its correct value or raising
+        an exception. This is not called for options that are ``None``.
+        For opts in this class, handles converting time amounts to floats.
+        """
+        super(HadoopInTheCloudRunner, self)._fix_opt(opt_key, opt_value, source)
+        if opt_key in ('check_cluster_every', 'cloud_fs_sync_secs'):
+            return self._fix_time_opt(opt_value)
+        else:
+            return opt_value
+        
+    def _fix_time_opt(self, opt_value):
+        """Casts a string to a float"""
+        if not isinstance(opt_value, float):]
+            opt_value = float(opt_value)
+        return opt_value
 
     ### Bootstrapping ###
 
